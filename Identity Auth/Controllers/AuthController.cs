@@ -18,11 +18,24 @@ public class AuthController : ControllerBase
 		if (!ModelState.IsValid)
 			return BadRequest(ModelState);
 
-		var result = await _authService.RegisterAsync(model);
+		// Get the base URL dynamically
+		var requestBaseUrl = $"{Request.Scheme}://{Request.Host}";
+
+		var result = await _authService.RegisterAsync(model, requestBaseUrl);
 		if (!result.Succeeded)
 			return BadRequest(result.Errors);
 
-		return Ok("User registered successfully");
+		return Ok("User registered successfully. Please check your email to confirm your account.");
+	}
+
+	[HttpGet("confirm-email")]
+	public async Task<IActionResult> ConfirmEmail(string userId, string token)
+	{
+		var result = await _authService.ConfirmEmailAsync(userId, token);
+		if (!result)
+			return BadRequest("Email confirmation failed.");
+
+		return Ok("Email confirmed successfully!");
 	}
 
 	[HttpPost("login")]
@@ -30,7 +43,7 @@ public class AuthController : ControllerBase
 	{
 		var token = await _authService.LoginAsync(model);
 		if (token == null)
-			return Unauthorized("Invalid credentials");
+			return Unauthorized("Invalid credentials or email not confirmed.");
 
 		return Ok(new { Token = token });
 	}

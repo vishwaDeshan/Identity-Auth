@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 public interface IAuthService
 {
-	Task<IdentityResult> RegisterAsync(RegisterDto model);
+	Task<IdentityResult> RegisterAsync(RegisterDto model, string requestBaseUrl);
+
+	Task<bool> ConfirmEmailAsync(string userId, string token);
+
 	Task<string> LoginAsync(LoginDto model);
 }

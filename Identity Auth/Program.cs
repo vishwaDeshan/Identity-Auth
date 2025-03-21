@@ -86,9 +86,10 @@ builder.Services.AddSwaggerGen(swagger =>
 });
 
 
-// Add Authentication Service & Helpers
+// Add Services & Helpers
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<JwtTokenHelper>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 
