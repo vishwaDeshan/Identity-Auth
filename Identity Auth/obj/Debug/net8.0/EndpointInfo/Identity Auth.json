@@ -1,8 +1,9 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Identity Auth",
-    "version": "1.0"
+    "title": "Entity Auth Web API",
+    "description": "Zaptern Student Opportunity Managment Portal",
+    "version": "v1"
   },
   "paths": {
     "/api/auth/register": {
@@ -183,6 +184,18 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }
