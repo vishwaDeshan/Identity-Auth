@@ -1,7 +1,10 @@
 using Identity_Auth.Data;
 using Identity_Auth.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,18 +20,41 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddAuthorization();
 
-//builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-//    .AddEntityFrameworkStores<DataContext>();
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 	.AddEntityFrameworkStores<DataContext>()
 	.AddDefaultTokenProviders();
 
+// Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.RequireHttpsMetadata = false;
+	options.SaveToken = true;
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(key),
+		ValidateIssuer = true,
+		ValidIssuer = jwtSettings["Issuer"],
+		ValidateAudience = true,
+		ValidAudience = jwtSettings["Audience"],
+		ValidateLifetime = true,
+		ClockSkew = TimeSpan.Zero
+	};
+});
+
+// Add Authentication Service & Helpers
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<JwtTokenHelper>();
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

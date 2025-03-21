@@ -1,6 +1,5 @@
 ﻿using Identity_Auth.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 [Route("api/auth")]
 [ApiController]
@@ -24,5 +23,15 @@ public class AuthController : ControllerBase
 			return BadRequest(result.Errors);
 
 		return Ok("User registered successfully");
+	}
+
+	[HttpPost("login")]
+	public async Task<IActionResult> Login([FromBody] LoginDto model)
+	{
+		var token = await _authService.LoginAsync(model);
+		if (token == null)
+			return Unauthorized("Invalid credentials");
+
+		return Ok(new { Token = token });
 	}
 }
