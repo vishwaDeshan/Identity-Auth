@@ -152,3 +152,4 @@ C:\Users\ACER\source\repos\Identity Auth\Identity Auth\obj\Debug\net8.0\refint\I
 C:\Users\ACER\source\repos\Identity Auth\Identity Auth\obj\Debug\net8.0\Identity Auth.pdb
 C:\Users\ACER\source\repos\Identity Auth\Identity Auth\obj\Debug\net8.0\Identity Auth.genruntimeconfig.cache
 C:\Users\ACER\source\repos\Identity Auth\Identity Auth\obj\Debug\net8.0\ref\Identity Auth.dll
+C:\Users\ACER\source\repos\Identity Auth\Identity Auth\bin\Debug\net8.0\Microsoft.Bcl.Memory.dll
