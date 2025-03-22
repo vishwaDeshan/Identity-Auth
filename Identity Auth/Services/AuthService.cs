@@ -86,7 +86,6 @@ public class AuthService : IAuthService
 
 		var resetLink = $"{requestBaseUrl}/api/auth/reset-password?email={email}&token={encodedToken}";
 
-		// TODO: Send email with reset link
 		await _emailService.SendEmailAsync(email, "Reset Password", $"Click here to reset your password: {resetLink}");
 
 		return true;
