@@ -67,4 +67,12 @@ public class AuthController : ControllerBase
 
 		return Ok("Password reset successful");
 	}
+
+	[HttpPost("logout")]
+	public async Task<IActionResult> Logout()
+	{
+		await _authService.SignOutAsync();
+		return Ok("User logged out successfully");
+	}
+
 }

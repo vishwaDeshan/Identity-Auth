@@ -13,4 +13,6 @@ public interface IAuthService
 	Task<bool> ForgotPasswordAsync(string email, string requestBaseUrl);
 
 	Task<bool> ResetPasswordAsync(ResetPasswordDto model);
+
+	Task<bool> SignOutAsync();
 }
