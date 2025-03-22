@@ -103,6 +103,10 @@ public class AuthService : IAuthService
 		return result.Succeeded;
 	}
 
-
+	public async Task<bool> SignOutAsync()
+	{
+		await _signInManager.SignOutAsync();
+		return true;
+	}
 
 }
