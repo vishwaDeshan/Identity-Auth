@@ -9,4 +9,8 @@ public interface IAuthService
 	Task<bool> ConfirmEmailAsync(string userId, string token);
 
 	Task<string> LoginAsync(LoginDto model);
+
+	Task<bool> ForgotPasswordAsync(string email, string requestBaseUrl);
+
+	Task<bool> ResetPasswordAsync(ResetPasswordDto model);
 }

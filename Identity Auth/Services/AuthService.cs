@@ -62,7 +62,11 @@ public class AuthService : IAuthService
 	{
 		var user = await _userManager.FindByEmailAsync(model.Email);
 		if (user == null)
-			return null; 
+			return null;
+
+		// Check if the user has confirmed their email
+		if (!await _userManager.IsEmailConfirmedAsync(user))
+			throw new UnauthorizedAccessException("Email not confirmed. Please verify your email before logging in.");
 
 		var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
 		if (!result.Succeeded)
@@ -70,4 +74,36 @@ public class AuthService : IAuthService
 
 		return _jwtTokenHelper.GenerateJwtToken(user);
 	}
+
+	public async Task<bool> ForgotPasswordAsync(string email, string requestBaseUrl)
+	{
+		var user = await _userManager.FindByEmailAsync(email);
+		if (user == null)
+			return false;
+
+		var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+		var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+		var resetLink = $"{requestBaseUrl}/api/auth/reset-password?email={email}&token={encodedToken}";
+
+		// TODO: Send email with reset link
+		await _emailService.SendEmailAsync(email, "Reset Password", $"Click here to reset your password: {resetLink}");
+
+		return true;
+	}
+
+	public async Task<bool> ResetPasswordAsync(ResetPasswordDto model)
+	{
+		var user = await _userManager.FindByEmailAsync(model.Email);
+		if (user == null)
+			return false;
+
+		var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+
+		var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
+		return result.Succeeded;
+	}
+
+
+
 }
